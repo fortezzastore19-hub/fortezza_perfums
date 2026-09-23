@@ -118,6 +118,10 @@
   @media (max-width:640px){
     .navlinks{display:none;}
   }
+
+  .oculto{display:none !important;}
+  .volver{display:inline-block;margin-bottom:1rem;font-size:.85rem;color:var(--bronze);
+    text-decoration:none;border-bottom:1px solid var(--bronze);cursor:pointer;}
 </style>
 </head>
 <body>
@@ -130,7 +134,9 @@
     <span>Fortezza Perfums</span>
   </div>
   <div class="navlinks">
-    <a href="#categorias">Categorías</a>
+    <a href="#" onclick="verInicio();return false;">Inicio</a>
+    <a href="#" onclick="verColeccion('etiqueta','Nuevo');return false;">Nuevos</a>
+    <a href="#" onclick="verColeccion('etiqueta','Oferta');return false;">Ofertas</a>
     <a href="#marcas">Marcas</a>
     <a href="#catalogo">Catálogo</a>
     <a href="#testimonios">Testimonios</a>
@@ -139,8 +145,8 @@
 
 <section class="hero" style="background-image:url('HERO_IMG_URL_AQUI');">
   <div class="hero-inner">
-    <div class="eyebrow">PERFUMES DE LUJO · 100% ORIGINALES</div>
-    <h1>La esencia de tener un impacto en el mundo.</h1>
+    <div class="eyebrow">PERFUMES ÁRABES Y DE NICHO · 100% ORIGINALES</div>
+    <h1>El perfume que se queda en la memoria de quien te abraza.</h1>
     <p>Fragancias originales seleccionadas para durar todo el día, con la potencia y calidad de las grandes casas árabes.</p>
     <div class="cta-row">
       <a class="btn btn-solid" href="#catalogo">Ver catálogo</a>
@@ -165,6 +171,7 @@
   </section>
 
   <section class="section" id="catalogo">
+    <a class="volver oculto" id="volver-inicio" onclick="verInicio()">← Volver al inicio</a>
     <div class="section-head">
       <h2 id="catalogo-titulo">Catálogo completo</h2>
       <input id="buscador" placeholder="Buscar perfume..." style="background:transparent;border:1px solid #35301F;color:var(--parchment);padding:.5rem .8rem;font-family:'Jost',sans-serif;">
@@ -266,6 +273,44 @@ document.getElementById("ig-footer").textContent = `@${INSTAGRAM_USER}`;
 let CATALOGO = [];
 let filtroCategoria = "Todas";
 let filtroMarca = "Todas";
+let filtroEtiqueta = "Todas";
+
+// Muestra solo la sección de catálogo (como una "página" de colección aparte)
+function entrarVistaColeccion() {
+  document.querySelector(".hero").classList.add("oculto");
+  document.getElementById("categorias").classList.add("oculto");
+  document.getElementById("marcas").classList.add("oculto");
+  document.getElementById("testimonios").classList.add("oculto");
+  document.getElementById("volver-inicio").classList.remove("oculto");
+  document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
+}
+
+// Selecciona un filtro (categoría, marca o etiqueta) y entra en vista de colección
+function verColeccion(tipo, valor) {
+  if (tipo === "categoria") filtroCategoria = valor;
+  if (tipo === "marca") filtroMarca = valor;
+  if (tipo === "etiqueta") filtroEtiqueta = valor;
+  renderCategorias();
+  renderMarcas();
+  renderCatalogo();
+  entrarVistaColeccion();
+}
+
+// Vuelve a la página de inicio completa, sin filtros
+function verInicio() {
+  filtroCategoria = "Todas";
+  filtroMarca = "Todas";
+  filtroEtiqueta = "Todas";
+  document.querySelector(".hero").classList.remove("oculto");
+  document.getElementById("categorias").classList.remove("oculto");
+  document.getElementById("marcas").classList.remove("oculto");
+  document.getElementById("testimonios").classList.remove("oculto");
+  document.getElementById("volver-inicio").classList.add("oculto");
+  renderCategorias();
+  renderMarcas();
+  renderCatalogo();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
 
 function renderCategorias() {
   const categorias = ["Todas", ...new Set(CATALOGO.map(p => p.categoria).filter(Boolean))];
@@ -275,7 +320,7 @@ function renderCategorias() {
     const div = document.createElement("div");
     div.className = "cat-tile" + (cat === filtroCategoria ? " active" : "");
     div.textContent = cat;
-    div.onclick = () => { filtroCategoria = cat; renderCategorias(); renderCatalogo(); };
+    div.onclick = () => cat === "Todas" ? verInicio() : verColeccion("categoria", cat);
     cont.appendChild(div);
   });
   document.getElementById("cat-count").textContent = `${CATALOGO.length} fragancias`;
@@ -289,7 +334,7 @@ function renderMarcas() {
     const b = document.createElement("button");
     b.className = "brand-chip" + (m === filtroMarca ? " active" : "");
     b.textContent = m;
-    b.onclick = () => { filtroMarca = m; renderMarcas(); renderCatalogo(); };
+    b.onclick = () => m === "Todas" ? verInicio() : verColeccion("marca", m);
     cont.appendChild(b);
   });
 }
@@ -299,10 +344,14 @@ function renderCatalogo() {
   let lista = CATALOGO;
   if (filtroCategoria !== "Todas") lista = lista.filter(p => p.categoria === filtroCategoria);
   if (filtroMarca !== "Todas") lista = lista.filter(p => p.marca === filtroMarca);
+  if (filtroEtiqueta !== "Todas") lista = lista.filter(p => (p.etiqueta || "").toLowerCase() === filtroEtiqueta.toLowerCase());
   if (busqueda) lista = lista.filter(p => p.nombre.toLowerCase().includes(busqueda));
 
-  document.getElementById("catalogo-titulo").textContent =
-    filtroCategoria === "Todas" ? "Catálogo completo" : `Categoría: ${filtroCategoria}`;
+  let titulo = "Catálogo completo";
+  if (filtroEtiqueta !== "Todas") titulo = filtroEtiqueta === "Nuevo" ? "Nuevas referencias" : "Ofertas";
+  else if (filtroMarca !== "Todas") titulo = filtroMarca;
+  else if (filtroCategoria !== "Todas") titulo = `Categoría: ${filtroCategoria}`;
+  document.getElementById("catalogo-titulo").textContent = titulo;
 
   const cont = document.getElementById("catalogo-grid");
   if (!lista.length) { cont.innerHTML = '<div class="empty">No hay perfumes con estos filtros.</div>'; return; }
@@ -310,7 +359,7 @@ function renderCatalogo() {
   cont.innerHTML = lista.map(p => `
     <div class="card">
       <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre}" onerror="this.src='${FOTO_RESPALDO}'">
-      <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}</div>
+      <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}${p.etiqueta ? " · " + p.etiqueta.toUpperCase() : ""}</div>
       <div class="name">${p.nombre}</div>
       <div class="desc">${p.descripcion || ""}</div>
       <div class="foot">
