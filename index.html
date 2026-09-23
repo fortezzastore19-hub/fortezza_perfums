@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fortezza Perfums — Perfumes originales en Pereira</title>
+<meta name="description" content="Catálogo de perfumes árabes y de nicho originales. Domicilios gratis en Pereira y Dosquebradas, envíos a toda Colombia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --onyx:#17140F;
+    --onyx-2:#1F1B14;
+    --bronze:#B08D57;
+    --bronze-dim:#8A6E44;
+    --parchment:#EDE6D8;
+    --stone:#9A9284;
+    --oxblood:#6E2A2A;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--onyx);
+    color:var(--parchment);
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    line-height:1.5;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    color:var(--parchment);
+    margin:0;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 1.5rem;}
+
+  /* Promo bar */
+  .promo{background:var(--bronze);color:var(--onyx);text-align:center;
+    font-size:.78rem;letter-spacing:.04em;padding:.55rem 1rem;font-weight:500;}
+
+  /* Nav */
+  nav.wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.3rem;padding-bottom:1.3rem;}
+  .brandmark{display:flex;align-items:center;gap:.6rem;}
+  .brandmark img{height:38px;width:38px;object-fit:contain;border-radius:2px;}
+  .brandmark span{font-family:'Fraunces',serif;font-size:1.25rem;letter-spacing:.02em;}
+  .navlinks{display:flex;gap:1.6rem;font-size:.85rem;}
+  .navlinks a{text-decoration:none;border-bottom:1px solid transparent;}
+  .navlinks a:hover{border-color:var(--bronze);}
+
+  /* Hero */
+  .hero{position:relative;min-height:64vh;display:flex;align-items:flex-end;
+    background-size:cover;background-position:center;border-bottom:1px solid var(--bronze-dim);}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(0deg, rgba(23,20,15,.95) 5%, rgba(23,20,15,.25) 70%);}
+  .hero-inner{position:relative;padding:3rem 1.5rem 3.2rem;max-width:1180px;margin:0 auto;width:100%;}
+  .eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--bronze);margin-bottom:.6rem;}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);max-width:14ch;line-height:1.05;}
+  .hero p{max-width:46ch;color:var(--stone);margin-top:.9rem;font-size:1.02rem;}
+  .cta-row{margin-top:1.6rem;display:flex;gap:1rem;flex-wrap:wrap;}
+  .btn{display:inline-block;padding:.7rem 1.4rem;font-size:.85rem;text-decoration:none;
+    border:1px solid var(--bronze);letter-spacing:.03em;}
+  .btn-solid{background:var(--bronze);color:var(--onyx);}
+  .btn-outline{color:var(--parchment);}
+
+  /* Section title */
+  .section{padding:3.2rem 0;}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid #35301F;padding-bottom:.8rem;margin-bottom:1.8rem;flex-wrap:wrap;gap:.5rem;}
+  .section-head h2{font-size:1.7rem;}
+  .section-head .sub{color:var(--stone);font-size:.85rem;}
+
+  /* Categorías */
+  .cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;
+    background:#35301F;border:1px solid #35301F;}
+  .cat-tile{background:var(--onyx-2);padding:2.2rem 1rem;text-align:center;cursor:pointer;
+    font-family:'Fraunces',serif;font-size:1.15rem;transition:background .2s;}
+  .cat-tile:hover{background:#26221680;}
+  .cat-tile.active{background:var(--bronze);color:var(--onyx);}
+
+  /* Marcas */
+  .brand-row{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .brand-chip{border:1px solid var(--bronze-dim);padding:.45rem 1rem;font-size:.82rem;
+    cursor:pointer;background:transparent;color:var(--parchment);font-family:'Jost',sans-serif;}
+  .brand-chip.active,.brand-chip:hover{background:var(--bronze);color:var(--onyx);border-color:var(--bronze);}
+
+  /* Catálogo */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.8rem;}
+  .card{border-top:1px solid var(--bronze);padding-top:.9rem;}
+  .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#26221a;filter:sepia(6%);}
+  .card .house{font-size:.72rem;color:var(--stone);letter-spacing:.05em;margin-top:.7rem;}
+  .card .name{font-family:'Fraunces',serif;font-size:1.25rem;margin-top:.2rem;}
+  .card .desc{font-size:.82rem;color:var(--stone);margin-top:.4rem;min-height:2.2rem;}
+  .card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;}
+  .card .price{font-family:'Fraunces',serif;font-size:1.2rem;color:var(--bronze);}
+  .card .wa{font-size:.76rem;text-decoration:none;border-bottom:1px solid var(--bronze);}
+  .empty{color:var(--stone);font-size:.9rem;padding:2rem 0;}
+
+  /* Testimonios */
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.6rem;}
+  .test-card{border:1px solid #35301F;padding:1rem;}
+  .test-card iframe{width:100%;aspect-ratio:16/9;border:0;}
+  .test-card .who{font-family:'Fraunces',serif;font-size:1rem;margin-top:.7rem;}
+  .test-card .quote{color:var(--stone);font-size:.85rem;margin-top:.3rem;font-style:italic;}
+
+  footer{border-top:1px solid #35301F;padding:2.6rem 0;font-size:.85rem;color:var(--stone);}
+  .foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.6rem;}
+  footer strong{color:var(--parchment);font-weight:500;}
+  footer a{text-decoration:none;border-bottom:1px solid var(--bronze-dim);}
+  .foot-bottom{text-align:center;margin-top:2rem;color:#605A4C;font-size:.75rem;}
+
+  .wa-float{position:fixed;bottom:1.3rem;right:1.3rem;background:#25D366;color:#fff;
+    width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4);font-size:1.5rem;z-index:99;}
+
+  @media (max-width:640px){
+    .navlinks{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="promo">DOMICILIOS GRATIS EN PEREIRA Y DOSQUEBRADAS · ENVÍOS A TODA COLOMBIA</div>
+
+<nav class="wrap">
+  <div class="brandmark">
+    <img id="logo-img" src="LOGO_URL_AQUI" alt="Fortezza Perfums" onerror="this.style.display='none'">
+    <span>Fortezza Perfums</span>
+  </div>
+  <div class="navlinks">
+    <a href="#categorias">Categorías</a>
+    <a href="#marcas">Marcas</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#testimonios">Testimonios</a>
+  </div>
+</nav>
+
+<section class="hero" style="background-image:url('HERO_IMG_URL_AQUI');">
+  <div class="hero-inner">
+    <div class="eyebrow">PERFUMES ÁRABES Y DE NICHO · 100% ORIGINALES</div>
+    <h1>El perfume que se queda en la memoria de quien te abraza.</h1>
+    <p>Fragancias originales seleccionadas para durar todo el día, con la potencia y calidad de las grandes casas árabes.</p>
+    <div class="cta-row">
+      <a class="btn btn-solid" href="#catalogo">Ver catálogo</a>
+      <a class="btn btn-outline" id="wa-hero" href="#" target="_blank">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="section" id="categorias">
+    <div class="section-head">
+      <h2>Explora por categoría</h2>
+      <span class="sub" id="cat-count"></span>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </section>
+
+  <section class="section" id="marcas">
+    <div class="section-head"><h2>Compra por marca</h2></div>
+    <div class="brand-row" id="brand-row"></div>
+  </section>
+
+  <section class="section" id="catalogo">
+    <div class="section-head">
+      <h2 id="catalogo-titulo">Catálogo completo</h2>
+      <input id="buscador" placeholder="Buscar perfume..." style="background:transparent;border:1px solid #35301F;color:var(--parchment);padding:.5rem .8rem;font-family:'Jost',sans-serif;">
+    </div>
+    <div class="grid" id="catalogo-grid"><div class="empty">Cargando catálogo...</div></div>
+  </section>
+
+  <section class="section" id="testimonios">
+    <div class="section-head"><h2>Lo que dicen nuestros clientes</h2></div>
+    <div class="test-grid" id="test-grid"><div class="empty">Cargando testimonios...</div></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <strong>Fortezza Perfums</strong><br>
+      Perfumes 100% originales y garantizados.
+    </div>
+    <div>
+      <strong>Contacto</strong><br>
+      <a id="wa-footer" href="#" target="_blank">WhatsApp</a> ·
+      <a id="ig-footer" href="#" target="_blank">Instagram</a>
+    </div>
+    <div>
+      <strong>Ubicación</strong><br>
+      Pereira, Risaralda<br>
+      Domicilios gratis Pereira / Dosquebradas
+    </div>
+  </div>
+  <div class="foot-bottom">Fortezza Perfums © 2026</div>
+</footer>
+
+<a class="wa-float" id="wa-float" href="#" target="_blank">💬</a>
+
+<script>
+// ============================================
+// CONFIGURA AQUÍ TUS DATOS REALES
+// ============================================
+const WHATSAPP_NUMBER = "573000000000"; // 57 = Colombia, sin espacios ni +
+const INSTAGRAM_USER = "_fortezzaperfums";
+
+// Links de tus Google Sheets publicados como CSV
+// (Archivo > Compartir > Publicar en la Web > CSV)
+const SHEET_PERFUMES = "PEGA_AQUI_EL_LINK_CSV_DE_PERFUMES";
+const SHEET_TESTIMONIOS = "PEGA_AQUI_EL_LINK_CSV_DE_TESTIMONIOS";
+
+const FOTO_RESPALDO = "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400";
+
+// ============================================
+// Parser simple de CSV (soporta comas dentro de comillas)
+// ============================================
+function parseCSV(texto) {
+  const filas = [];
+  let fila = [], campo = "", enComillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (enComillas) {
+      if (c === '"' && texto[i+1] === '"') { campo += '"'; i++; }
+      else if (c === '"') { enComillas = false; }
+      else { campo += c; }
+    } else {
+      if (c === '"') enComillas = true;
+      else if (c === ',') { fila.push(campo); campo = ""; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && texto[i+1] === '\n') i++;
+        fila.push(campo); campo = "";
+        if (fila.length > 1 || fila[0] !== "") filas.push(fila);
+        fila = [];
+      } else { campo += c; }
+    }
+  }
+  if (campo !== "" || fila.length) { fila.push(campo); filas.push(fila); }
+  const encabezados = filas.shift().map(h => h.trim().toLowerCase());
+  return filas.map(f => {
+    const obj = {};
+    encabezados.forEach((h, idx) => obj[h] = (f[idx] || "").trim());
+    return obj;
+  });
+}
+
+function linkWhatsapp(nombre, precio) {
+  const precioTxt = precio ? ` ($${precio})` : "";
+  const msg = `Hola! Me interesa el perfume ${nombre}${precioTxt}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+// Botones fijos de WhatsApp
+document.getElementById("wa-float").href = `https://wa.me/${WHATSAPP_NUMBER}`;
+document.getElementById("wa-footer").href = `https://wa.me/${WHATSAPP_NUMBER}`;
+document.getElementById("wa-hero").href = `https://wa.me/${WHATSAPP_NUMBER}`;
+document.getElementById("ig-footer").href = `https://instagram.com/${INSTAGRAM_USER}`;
+document.getElementById("ig-footer").textContent = `@${INSTAGRAM_USER}`;
+
+// ============================================
+// ESTADO
+// ============================================
+let CATALOGO = [];
+let filtroCategoria = "Todas";
+let filtroMarca = "Todas";
+
+function renderCategorias() {
+  const categorias = ["Todas", ...new Set(CATALOGO.map(p => p.categoria).filter(Boolean))];
+  const cont = document.getElementById("cat-grid");
+  cont.innerHTML = "";
+  categorias.forEach(cat => {
+    const div = document.createElement("div");
+    div.className = "cat-tile" + (cat === filtroCategoria ? " active" : "");
+    div.textContent = cat;
+    div.onclick = () => { filtroCategoria = cat; renderCategorias(); renderCatalogo(); };
+    cont.appendChild(div);
+  });
+  document.getElementById("cat-count").textContent = `${CATALOGO.length} fragancias`;
+}
+
+function renderMarcas() {
+  const marcas = ["Todas", ...new Set(CATALOGO.map(p => p.marca).filter(Boolean))];
+  const cont = document.getElementById("brand-row");
+  cont.innerHTML = "";
+  marcas.forEach(m => {
+    const b = document.createElement("button");
+    b.className = "brand-chip" + (m === filtroMarca ? " active" : "");
+    b.textContent = m;
+    b.onclick = () => { filtroMarca = m; renderMarcas(); renderCatalogo(); };
+    cont.appendChild(b);
+  });
+}
+
+function renderCatalogo() {
+  const busqueda = document.getElementById("buscador").value.toLowerCase();
+  let lista = CATALOGO;
+  if (filtroCategoria !== "Todas") lista = lista.filter(p => p.categoria === filtroCategoria);
+  if (filtroMarca !== "Todas") lista = lista.filter(p => p.marca === filtroMarca);
+  if (busqueda) lista = lista.filter(p => p.nombre.toLowerCase().includes(busqueda));
+
+  document.getElementById("catalogo-titulo").textContent =
+    filtroCategoria === "Todas" ? "Catálogo completo" : `Categoría: ${filtroCategoria}`;
+
+  const cont = document.getElementById("catalogo-grid");
+  if (!lista.length) { cont.innerHTML = '<div class="empty">No hay perfumes con estos filtros.</div>'; return; }
+
+  cont.innerHTML = lista.map(p => `
+    <div class="card">
+      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre}" onerror="this.src='${FOTO_RESPALDO}'">
+      <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}</div>
+      <div class="name">${p.nombre}</div>
+      <div class="desc">${p.descripcion || ""}</div>
+      <div class="foot">
+        <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
+        <a class="wa" href="${linkWhatsapp(p.nombre, p.precio)}" target="_blank">Pedir por WhatsApp →</a>
+      </div>
+    </div>
+  `).join("");
+}
+
+document.getElementById("buscador").addEventListener("input", renderCatalogo);
+
+// ============================================
+// CARGA DE DATOS
+// ============================================
+fetch(SHEET_PERFUMES)
+  .then(r => r.text())
+  .then(txt => {
+    CATALOGO = parseCSV(txt);
+    renderCategorias();
+    renderMarcas();
+    renderCatalogo();
+  })
+  .catch(() => {
+    document.getElementById("catalogo-grid").innerHTML =
+      '<div class="empty">No se pudo cargar el catálogo. Revisa el link de Google Sheets (SHEET_PERFUMES) en el código.</div>';
+  });
+
+fetch(SHEET_TESTIMONIOS)
+  .then(r => r.text())
+  .then(txt => {
+    const testimonios = parseCSV(txt);
+    const cont = document.getElementById("test-grid");
+    if (!testimonios.length) { cont.innerHTML = '<div class="empty">Aún no hay testimonios cargados.</div>'; return; }
+    cont.innerHTML = testimonios.map(t => {
+      const videoId = (t.video || "").split("v=")[1]?.split("&")[0] || (t.video || "").split("youtu.be/")[1];
+      const embed = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+      return `
+        <div class="test-card">
+          ${embed ? `<iframe src="${embed}" allowfullscreen></iframe>` : ""}
+          <div class="who">${t.nombre_cliente || ""}</div>
+          <div class="quote">${t.comentario || ""}</div>
+        </div>`;
+    }).join("");
+  })
+  .catch(() => {
+    document.getElementById("test-grid").innerHTML =
+      '<div class="empty">Aún no hay testimonios cargados (o falta el link SHEET_TESTIMONIOS).</div>';
+  });
+</script>
+
+</body>
+</html>
