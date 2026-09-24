@@ -9,13 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --onyx:#17140F;
-    --onyx-2:#1F1B14;
-    --bronze:#B08D57;
-    --bronze-dim:#8A6E44;
-    --parchment:#EDE6D8;
-    --stone:#9A9284;
-    --oxblood:#6E2A2A;
+    --onyx:#121212;
+    --onyx-2:#1B1B1B;
+    --bronze:#E7E7E4;
+    --bronze-dim:#4A4A47;
+    --parchment:#F2F2F0;
+    --stone:#9A9A96;
+    --oxblood:#3A3A38;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -92,7 +92,7 @@
   /* Catálogo */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.8rem;}
   .card{border-top:1px solid var(--bronze);padding-top:.9rem;}
-  .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#26221a;filter:sepia(6%);}
+  .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#1a1a1a;}
   .card .house{font-size:.72rem;color:var(--stone);letter-spacing:.05em;margin-top:.7rem;}
   .card .name{font-family:'Fraunces',serif;font-size:1.25rem;margin-top:.2rem;}
   .card .desc{font-size:.82rem;color:var(--stone);margin-top:.4rem;min-height:2.2rem;}
@@ -120,7 +120,19 @@
 
   @media (max-width:640px){
     .navlinks{display:none;}
+    .menu-toggle{display:block !important;}
   }
+
+  .menu-toggle{
+    display:none;background:transparent;border:1px solid var(--bronze-dim);
+    color:var(--parchment);font-size:1.3rem;padding:.3rem .8rem;cursor:pointer;
+  }
+
+  .mobile-menu{display:none;flex-direction:column;background:var(--onyx-2);
+    border-top:1px solid var(--bronze-dim);border-bottom:1px solid var(--bronze-dim);}
+  .mobile-menu.abierto{display:flex;}
+  .mobile-menu a{padding:1rem 1.5rem;font-size:1rem;text-decoration:none;
+    border-bottom:1px solid #2a251a;}
 
   .oculto{display:none !important;}
   .volver{display:inline-block;margin-bottom:1rem;font-size:.85rem;color:var(--bronze);
@@ -144,7 +156,17 @@
     <a href="#catalogo">Catálogo</a>
     <a href="#testimonios">Testimonios</a>
   </div>
+  <button class="menu-toggle" id="menu-toggle" onclick="toggleMenuMovil()">☰</button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="verInicio();toggleMenuMovil();return false;">Inicio</a>
+  <a href="#" onclick="verColeccion('etiqueta','Nuevo');toggleMenuMovil();return false;">Nuevos</a>
+  <a href="#" onclick="verColeccion('etiqueta','Oferta');toggleMenuMovil();return false;">Ofertas</a>
+  <a href="#marcas" onclick="toggleMenuMovil();">Marcas</a>
+  <a href="#catalogo" onclick="toggleMenuMovil();">Catálogo</a>
+  <a href="#testimonios" onclick="toggleMenuMovil();">Testimonios</a>
+</div>
 
 <section class="hero" style="background-image:url('HERO_IMG_URL_AQUI');">
   <div class="hero-inner">
@@ -159,6 +181,11 @@
 </section>
 
 <div class="wrap">
+
+  <section class="section" id="recomendados">
+    <div class="section-head"><h2>Algunos de nuestros favoritos</h2></div>
+    <div class="grid" id="recomendados-grid"><div class="empty">Cargando...</div></div>
+  </section>
 
   <section class="section" id="categorias">
     <div class="section-head">
@@ -229,6 +256,9 @@ const FOTO_RESPALDO = "https://images.unsplash.com/photo-1541643600914-78b084683
 // Parser simple de CSV (soporta comas dentro de comillas)
 // ============================================
 function parseCSV(texto) {
+  // Quita el BOM invisible que a veces agrega Google al publicar el CSV
+  if (texto.charCodeAt(0) === 0xFEFF) texto = texto.slice(1);
+
   const filas = [];
   let fila = [], campo = "", enComillas = false;
   for (let i = 0; i < texto.length; i++) {
@@ -249,10 +279,14 @@ function parseCSV(texto) {
     }
   }
   if (campo !== "" || fila.length) { fila.push(campo); filas.push(fila); }
-  const encabezados = filas.shift().map(h => h.trim().toLowerCase());
+
+  // Normaliza encabezados: sin tildes, sin espacios extra, minúsculas
+  const sinTildes = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const encabezados = filas.shift().map(h => sinTildes(h.trim().toLowerCase()));
+
   return filas.map(f => {
     const obj = {};
-    encabezados.forEach((h, idx) => obj[h] = (f[idx] || "").trim());
+    encabezados.forEach((h, idx) => { obj[h] = (f[idx] || "").trim(); });
     return obj;
   });
 }
@@ -270,6 +304,10 @@ document.getElementById("wa-hero").href = `https://wa.me/${WHATSAPP_NUMBER}`;
 document.getElementById("ig-footer").href = `https://instagram.com/${INSTAGRAM_USER}`;
 document.getElementById("ig-footer").textContent = `@${INSTAGRAM_USER}`;
 
+function toggleMenuMovil() {
+  document.getElementById("mobile-menu").classList.toggle("abierto");
+}
+
 // Sombra sutil en el menú fijo cuando hay scroll
 window.addEventListener("scroll", () => {
   document.getElementById("nav-principal").classList.toggle("con-sombra", window.scrollY > 10);
@@ -286,6 +324,7 @@ let filtroEtiqueta = "Todas";
 // Muestra solo la sección de catálogo (como una "página" de colección aparte)
 function entrarVistaColeccion() {
   document.querySelector(".hero").classList.add("oculto");
+  document.getElementById("recomendados").classList.add("oculto");
   document.getElementById("categorias").classList.add("oculto");
   document.getElementById("marcas").classList.add("oculto");
   document.getElementById("testimonios").classList.add("oculto");
@@ -310,6 +349,7 @@ function verInicio() {
   filtroMarca = "Todas";
   filtroEtiqueta = "Todas";
   document.querySelector(".hero").classList.remove("oculto");
+  document.getElementById("recomendados").classList.remove("oculto");
   document.getElementById("categorias").classList.remove("oculto");
   document.getElementById("marcas").classList.remove("oculto");
   document.getElementById("testimonios").classList.remove("oculto");
@@ -353,7 +393,7 @@ function renderCatalogo() {
   if (filtroCategoria !== "Todas") lista = lista.filter(p => p.categoria === filtroCategoria);
   if (filtroMarca !== "Todas") lista = lista.filter(p => p.marca === filtroMarca);
   if (filtroEtiqueta !== "Todas") lista = lista.filter(p => (p.etiqueta || "").toLowerCase() === filtroEtiqueta.toLowerCase());
-  if (busqueda) lista = lista.filter(p => p.nombre.toLowerCase().includes(busqueda));
+  if (busqueda) lista = lista.filter(p => (p.nombre || "").toLowerCase().includes(busqueda));
 
   let titulo = "Catálogo completo";
   if (filtroEtiqueta !== "Todas") titulo = filtroEtiqueta === "Nuevo" ? "Nuevas referencias" : "Ofertas";
@@ -366,13 +406,13 @@ function renderCatalogo() {
 
   cont.innerHTML = lista.map(p => `
     <div class="card">
-      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre}" onerror="this.src='${FOTO_RESPALDO}'">
+      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre || ""}" onerror="this.src='${FOTO_RESPALDO}'">
       <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}${p.etiqueta ? " · " + p.etiqueta.toUpperCase() : ""}</div>
-      <div class="name">${p.nombre}</div>
+      <div class="name">${p.nombre || "Sin nombre"}</div>
       <div class="desc">${p.descripcion || ""}</div>
       <div class="foot">
         <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
-        <a class="wa" href="${linkWhatsapp(p.nombre, p.precio)}" target="_blank">Pedir por WhatsApp →</a>
+        <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
       </div>
     </div>
   `).join("");
@@ -383,10 +423,29 @@ document.getElementById("buscador").addEventListener("input", renderCatalogo);
 // ============================================
 // CARGA DE DATOS
 // ============================================
+function renderRecomendados() {
+  const cont = document.getElementById("recomendados-grid");
+  const destacados = CATALOGO.filter(p => (p.etiqueta || "").toLowerCase() === "nuevo").slice(0, 4);
+  const lista = destacados.length ? destacados : CATALOGO.slice(0, 4);
+  if (!lista.length) { cont.innerHTML = '<div class="empty">Agrega perfumes a tu Sheet para verlos aquí.</div>'; return; }
+  cont.innerHTML = lista.map(p => `
+    <div class="card">
+      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre || ""}" onerror="this.src='${FOTO_RESPALDO}'">
+      <div class="house">${(p.marca || "").toUpperCase()}</div>
+      <div class="name">${p.nombre || "Sin nombre"}</div>
+      <div class="foot">
+        <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
+        <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
+      </div>
+    </div>
+  `).join("");
+}
+
 fetch(SHEET_PERFUMES)
   .then(r => r.text())
   .then(txt => {
     CATALOGO = parseCSV(txt);
+    renderRecomendados();
     renderCategorias();
     renderMarcas();
     renderCatalogo();
