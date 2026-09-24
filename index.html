@@ -152,9 +152,9 @@
     <a href="#" onclick="verInicio();return false;">Inicio</a>
     <a href="#" onclick="verColeccion('etiqueta','Nuevo');return false;">Nuevos</a>
     <a href="#" onclick="verColeccion('etiqueta','Oferta');return false;">Ofertas</a>
-    <a href="#marcas">Marcas</a>
-    <a href="#catalogo">Catálogo</a>
-    <a href="#testimonios">Testimonios</a>
+    <a href="#" onclick="verSoloMarcas();return false;">Marcas</a>
+    <a href="#" onclick="verCatalogoCompleto();return false;">Catálogo</a>
+    <a href="#" onclick="verSoloTestimonios();return false;">Testimonios</a>
   </div>
   <button class="menu-toggle" id="menu-toggle" onclick="toggleMenuMovil()">☰</button>
 </nav>
@@ -163,9 +163,9 @@
   <a href="#" onclick="verInicio();toggleMenuMovil();return false;">Inicio</a>
   <a href="#" onclick="verColeccion('etiqueta','Nuevo');toggleMenuMovil();return false;">Nuevos</a>
   <a href="#" onclick="verColeccion('etiqueta','Oferta');toggleMenuMovil();return false;">Ofertas</a>
-  <a href="#marcas" onclick="toggleMenuMovil();">Marcas</a>
-  <a href="#catalogo" onclick="toggleMenuMovil();">Catálogo</a>
-  <a href="#testimonios" onclick="toggleMenuMovil();">Testimonios</a>
+  <a href="#" onclick="verSoloMarcas();toggleMenuMovil();return false;">Marcas</a>
+  <a href="#" onclick="verCatalogoCompleto();toggleMenuMovil();return false;">Catálogo</a>
+  <a href="#" onclick="verSoloTestimonios();toggleMenuMovil();return false;">Testimonios</a>
 </div>
 
 <section class="hero" style="background-image:url('HERO_IMG_URL_AQUI');">
@@ -174,13 +174,15 @@
     <h1>El perfume que se queda en la memoria de quien te abraza.</h1>
     <p>Fragancias originales seleccionadas para durar todo el día, con la potencia y calidad de las grandes casas árabes.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" href="#catalogo">Ver catálogo</a>
+      <a class="btn btn-solid" href="#" onclick="verCatalogoCompleto();return false;">Ver catálogo</a>
       <a class="btn btn-outline" id="wa-hero" href="#" target="_blank">Escribir por WhatsApp</a>
     </div>
   </div>
 </section>
 
 <div class="wrap">
+
+  <div class="volver oculto" id="volver-inicio-bar" onclick="verInicio()" style="margin-top:1.5rem;">← Volver al inicio</div>
 
   <section class="section" id="recomendados">
     <div class="section-head"><h2>Algunos de nuestros favoritos</h2></div>
@@ -201,7 +203,6 @@
   </section>
 
   <section class="section" id="catalogo">
-    <a class="volver oculto" id="volver-inicio" onclick="verInicio()">← Volver al inicio</a>
     <div class="section-head">
       <h2 id="catalogo-titulo">Catálogo completo</h2>
       <input id="buscador" placeholder="Buscar perfume..." style="background:transparent;border:1px solid #35301F;color:var(--parchment);padding:.5rem .8rem;font-family:'Jost',sans-serif;">
@@ -242,7 +243,7 @@
 // ============================================
 // CONFIGURA AQUÍ TUS DATOS REALES
 // ============================================
-const WHATSAPP_NUMBER = "573215207592"; // 57 = Colombia, sin espacios ni +
+const WHATSAPP_NUMBER = "573000000000"; // 57 = Colombia, sin espacios ni +
 const INSTAGRAM_USER = "_fortezzaperfums";
 
 // Links de tus Google Sheets publicados como CSV
@@ -321,18 +322,19 @@ let filtroCategoria = "Todas";
 let filtroMarca = "Todas";
 let filtroEtiqueta = "Todas";
 
-// Muestra solo la sección de catálogo (como una "página" de colección aparte)
-function entrarVistaColeccion() {
-  document.querySelector(".hero").classList.add("oculto");
-  document.getElementById("recomendados").classList.add("oculto");
-  document.getElementById("categorias").classList.add("oculto");
-  document.getElementById("marcas").classList.add("oculto");
-  document.getElementById("testimonios").classList.add("oculto");
-  document.getElementById("volver-inicio").classList.remove("oculto");
-  document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
+const SECCIONES = ["hero", "recomendados", "categorias", "marcas", "catalogo", "testimonios"];
+
+// Oculta todas las secciones excepto la indicada, como si fuera una página aparte
+function mostrarSoloSeccion(idMostrar) {
+  SECCIONES.forEach(id => {
+    const el = id === "hero" ? document.querySelector(".hero") : document.getElementById(id);
+    if (el) el.classList.toggle("oculto", id !== idMostrar);
+  });
+  document.getElementById("volver-inicio-bar").classList.remove("oculto");
+  window.scrollTo({top:0, behavior:"instant"});
 }
 
-// Selecciona un filtro (categoría, marca o etiqueta) y entra en vista de colección
+// Filtra el catálogo (por categoría, marca o etiqueta) y lo muestra como página aparte
 function verColeccion(tipo, valor) {
   if (tipo === "categoria") filtroCategoria = valor;
   if (tipo === "marca") filtroMarca = valor;
@@ -340,20 +342,28 @@ function verColeccion(tipo, valor) {
   renderCategorias();
   renderMarcas();
   renderCatalogo();
-  entrarVistaColeccion();
+  mostrarSoloSeccion("catalogo");
 }
+
+function verCatalogoCompleto() {
+  filtroCategoria = "Todas"; filtroMarca = "Todas"; filtroEtiqueta = "Todas";
+  renderCategorias(); renderMarcas(); renderCatalogo();
+  mostrarSoloSeccion("catalogo");
+}
+
+function verSoloMarcas() { mostrarSoloSeccion("marcas"); }
+function verSoloTestimonios() { mostrarSoloSeccion("testimonios"); }
 
 // Vuelve a la página de inicio completa, sin filtros
 function verInicio() {
   filtroCategoria = "Todas";
   filtroMarca = "Todas";
   filtroEtiqueta = "Todas";
-  document.querySelector(".hero").classList.remove("oculto");
-  document.getElementById("recomendados").classList.remove("oculto");
-  document.getElementById("categorias").classList.remove("oculto");
-  document.getElementById("marcas").classList.remove("oculto");
-  document.getElementById("testimonios").classList.remove("oculto");
-  document.getElementById("volver-inicio").classList.add("oculto");
+  SECCIONES.forEach(id => {
+    const el = id === "hero" ? document.querySelector(".hero") : document.getElementById(id);
+    if (el) el.classList.remove("oculto");
+  });
+  document.getElementById("volver-inicio-bar").classList.add("oculto");
   renderCategorias();
   renderMarcas();
   renderCatalogo();
