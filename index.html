@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fortezza Perfums — Perfumes de lujo</title>
-<link rel="icon" type="image/png" href="imagenes/logo.png">
+<link rel="icon" type="image/png" href="imagenes/sitio/logo.png">
 <meta name="description" content="Catálogo de perfumes árabes y de nicho originales. Domicilios gratis en Pereira y Dosquebradas, envíos a toda Colombia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
   /* Catálogo */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.8rem;}
   .card{border-top:1px solid var(--bronze);padding-top:.9rem;}
-  .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#1a1a1a;}
+  .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#1a1a1a;transition:opacity 0.3s ease;}
   .card .house{font-size:.72rem;color:var(--stone);letter-spacing:.05em;margin-top:.7rem;}
   .card .name{font-family:'Fraunces',serif;font-size:1.25rem;margin-top:.2rem;}
   .card .desc{font-size:.82rem;color:var(--stone);margin-top:.4rem;min-height:2.2rem;}
@@ -235,7 +235,7 @@
 
 <nav class="wrap" id="nav-principal">
   <div class="brandmark" onclick="verInicio()" style="cursor:pointer;">
-    <img id="logo-img" src="imagenes/logo.png" alt="Fortezza Perfums" onerror="this.style.display='none'">
+    <img id="logo-img" src="imagenes/sitio/logo.png" alt="Fortezza Perfums" onerror="this.style.display='none'">
     <span>Fortezza Perfums</span>
   </div>
   <div class="navlinks">
@@ -263,26 +263,26 @@
   <div class="carousel-container">
     <!-- Slide 1 -->
     <div class="slide active">
-      <img class="hero-img pc-slide" src="imagenes/banner.jpg" alt="Banner PC 1">
-      <img class="hero-img mobile-slide" src="imagenes/banner_mobile.png" alt="Banner Móvil 1">
+      <img class="hero-img pc-slide" src="imagenes/banners/banner.jpg" alt="Banner PC 1">
+      <img class="hero-img mobile-slide" src="imagenes/banners/banner_mobile.png" alt="Banner Móvil 1">
     </div>
 
     <!-- Slide 2 -->
     <div class="slide">
-      <img class="hero-img pc-slide" src="imagenes/banner2.jpg" alt="Banner PC 2">
-      <img class="hero-img mobile-slide" src="imagenes/banner2_mobile.png" alt="Banner Móvil 2">
+      <img class="hero-img pc-slide" src="imagenes/banners/banner2.jpg" alt="Banner PC 2">
+      <img class="hero-img mobile-slide" src="imagenes/banners/banner2_mobile.png" alt="Banner Móvil 2">
     </div>
 
     <!-- Slide 3 -->
     <div class="slide">
-      <img class="hero-img pc-slide" src="imagenes/banner3.jpg.png" alt="Banner PC 3">
-      <img class="hero-img mobile-slide" src="imagenes/banner3_mobile.png" alt="Banner Móvil 3">
+      <img class="hero-img pc-slide" src="imagenes/banners/banner3.jpg.png" alt="Banner PC 3">
+      <img class="hero-img mobile-slide" src="imagenes/banners/banner3_mobile.png" alt="Banner Móvil 3">
     </div>
 
     <!-- Slide 4 -->
     <div class="slide">
-      <img class="hero-img pc-slide" src="imagenes/banner4.jpg" alt="Banner PC 4">
-      <img class="hero-img mobile-slide" src="imagenes/banner4_mobile.png" alt="Banner Móvil 4">
+      <img class="hero-img pc-slide" src="imagenes/banners/banner4.jpg" alt="Banner PC 4">
+      <img class="hero-img mobile-slide" src="imagenes/banners/banner4_mobile.png" alt="Banner Móvil 4">
     </div>
     
     <!-- Botones de navegación (Flechas) -->
@@ -419,7 +419,7 @@ function linkWhatsapp(nombre, precio) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
 
-// Botones fijos de WhatsApp
+// Botones fijos de WhatsApp e Instagram
 document.getElementById("wa-float").href = `https://wa.me/${WHATSAPP_NUMBER}`;
 document.getElementById("wa-footer").href = `https://wa.me/${WHATSAPP_NUMBER}`;
 document.getElementById("wa-hero").href = `https://wa.me/${WHATSAPP_NUMBER}`;
@@ -515,6 +515,14 @@ function renderMarcas() {
   });
 }
 
+// Función auxiliar para obtener las fotos de cada producto
+function obtenerFotos(p) {
+  const fotos = (p.foto || "").split(",").map(f => f.trim()).filter(Boolean);
+  const principal = fotos[0] || FOTO_RESPALDO;
+  const secundaria = fotos[1] || principal;
+  return { principal, secundaria };
+}
+
 function renderCatalogo() {
   const busqueda = document.getElementById("buscador").value.toLowerCase();
   let lista = CATALOGO;
@@ -532,18 +540,24 @@ function renderCatalogo() {
   const cont = document.getElementById("catalogo-grid");
   if (!lista.length) { cont.innerHTML = '<div class="empty">No hay perfumes con estos filtros.</div>'; return; }
 
-  cont.innerHTML = lista.map(p => `
-    <div class="card">
-      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre || ""}" onerror="this.src='${FOTO_RESPALDO}'">
-      <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}${p.etiqueta ? " · " + p.etiqueta.toUpperCase() : ""}</div>
-      <div class="name">${p.nombre || "Sin nombre"}</div>
-      <div class="desc">${p.descripcion || ""}</div>
-      <div class="foot">
-        <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
-        <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
+  cont.innerHTML = lista.map(p => {
+    const { principal, secundaria } = obtenerFotos(p);
+    return `
+      <div class="card">
+        <img src="${principal}" alt="${p.nombre || ""}" 
+             onmouseover="if('${secundaria}' !== '${principal}') this.src='${secundaria}'" 
+             onmouseout="this.src='${principal}'"
+             onerror="this.src='${FOTO_RESPALDO}'">
+        <div class="house">${(p.marca || "").toUpperCase()}${p.categoria ? " · " + p.categoria : ""}${p.etiqueta ? " · " + p.etiqueta.toUpperCase() : ""}</div>
+        <div class="name">${p.nombre || "Sin nombre"}</div>
+        <div class="desc">${p.descripcion || ""}</div>
+        <div class="foot">
+          <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
+          <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 document.getElementById("buscador").addEventListener("input", renderCatalogo);
@@ -561,17 +575,23 @@ function renderRecomendados() {
   const lista = destacados.length ? destacados : CATALOGO;
   if (!lista.length) { cont.innerHTML = '<div class="empty">Agrega perfumes a tu Sheet para verlos aquí.</div>'; return; }
   
-  cont.innerHTML = lista.map(p => `
-    <div class="card">
-      <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre || ""}" onerror="this.src='${FOTO_RESPALDO}'">
-      <div class="house">${(p.marca || "").toUpperCase()}</div>
-      <div class="name">${p.nombre || "Sin nombre"}</div>
-      <div class="foot">
-        <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
-        <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
+  cont.innerHTML = lista.map(p => {
+    const { principal, secundaria } = obtenerFotos(p);
+    return `
+      <div class="card">
+        <img src="${principal}" alt="${p.nombre || ""}" 
+             onmouseover="if('${secundaria}' !== '${principal}') this.src='${secundaria}'" 
+             onmouseout="this.src='${principal}'"
+             onerror="this.src='${FOTO_RESPALDO}'">
+        <div class="house">${(p.marca || "").toUpperCase()}</div>
+        <div class="name">${p.nombre || "Sin nombre"}</div>
+        <div class="foot">
+          <span class="price">${p.precio ? "$" + p.precio : "Consultar"}</span>
+          <a class="wa" href="${linkWhatsapp(p.nombre || "", p.precio || "")}" target="_blank">Pedir por WhatsApp →</a>
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 fetch(SHEET_PERFUMES)
