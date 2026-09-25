@@ -42,11 +42,10 @@
   .promo{background:var(--bronze);color:var(--onyx);text-align:center;
     font-size:.78rem;letter-spacing:.04em;padding:.55rem 1rem;font-weight:500;}
 
-  /* Nav */
+  /* Nav (Static - desparece al hacer scroll) */
   nav.wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.1rem;
-    position:sticky;top:0;background:var(--onyx);z-index:80;border-bottom:1px solid transparent;
+    position:relative;background:var(--onyx);z-index:80;border-bottom:1px solid transparent;
     transition:border-color .2s, box-shadow .2s;}
-  nav.wrap.con-sombra{border-color:#35301F;box-shadow:0 6px 16px rgba(0,0,0,.35);}
   .brandmark{display:flex;align-items:center;gap:.6rem;}
   .brandmark img{height:38px;width:38px;object-fit:contain;border-radius:2px;}
   .brandmark span{font-family:'Fraunces',serif;font-size:1.25rem;letter-spacing:.02em;}
@@ -277,11 +276,11 @@
   <div class="volver oculto" id="volver-inicio-bar" onclick="verInicio()" style="margin-top:1.5rem;">← Volver al inicio</div>
 
   <section class="section" id="recomendados">
-    <div class="section-head"><h2>Algunos de nuestros favoritos</h2></div>
+    <div class="section-head"><h2>New Arrivals / Recomendados</h2></div>
     <div class="grid" id="recomendados-grid"><div class="empty">Cargando...</div></div>
   </section>
 
-  <section class="section" id="categorias">
+  <section class="section oculto" id="categorias">
     <div class="section-head">
       <h2>Explora por categoría</h2>
       <span class="sub" id="cat-count"></span>
@@ -289,12 +288,12 @@
     <div class="cat-grid" id="cat-grid"></div>
   </section>
 
-  <section class="section" id="marcas">
+  <section class="section oculto" id="marcas">
     <div class="section-head"><h2>Compra por marca</h2></div>
     <div class="brand-row" id="brand-row"></div>
   </section>
 
-  <section class="section" id="catalogo">
+  <section class="section oculto" id="catalogo">
     <div class="section-head">
       <h2 id="catalogo-titulo">Catálogo completo</h2>
       <input id="buscador" placeholder="Buscar perfume..." style="background:transparent;border:1px solid #35301F;color:var(--parchment);padding:.5rem .8rem;font-family:'Jost',sans-serif;">
@@ -335,7 +334,6 @@
 // ============================================
 // CONFIGURA AQUÍ TUS DATOS REALES
 // ============================================
-// REEMPLAZA ESTE NÚMERO POR TU NÚMERO DE WHATSAPP REAL (Incluye código de país 57 para Colombia)
 const WHATSAPP_NUMBER = "573215207592"; 
 const INSTAGRAM_USER = "_fortezzaperfums";
 
@@ -397,10 +395,6 @@ function toggleMenuMovil() {
   document.getElementById("mobile-menu").classList.toggle("abierto");
 }
 
-window.addEventListener("scroll", () => {
-  document.getElementById("nav-principal").classList.toggle("con-sombra", window.scrollY > 10);
-});
-
 // ============================================
 // ESTADO
 // ============================================
@@ -443,14 +437,20 @@ function verInicio() {
   filtroCategoria = "Todas";
   filtroMarca = "Todas";
   filtroEtiqueta = "Todas";
+  
+  // En inicio solo mostramos Hero, Recomendados (New Arrivals) y Testimonios
   SECCIONES.forEach(id => {
     const el = id === "hero" ? document.querySelector(".hero") : document.getElementById(id);
-    if (el) el.classList.remove("oculto");
+    if (el) {
+      if (id === "hero" || id === "recomendados" || id === "testimonios") {
+        el.classList.remove("oculto");
+      } else {
+        el.classList.add("oculto");
+      }
+    }
   });
   document.getElementById("volver-inicio-bar").classList.add("oculto");
-  renderCategorias();
-  renderMarcas();
-  renderCatalogo();
+  renderRecomendados();
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -519,9 +519,15 @@ document.getElementById("buscador").addEventListener("input", renderCatalogo);
 // ============================================
 function renderRecomendados() {
   const cont = document.getElementById("recomendados-grid");
-  const destacados = CATALOGO.filter(p => (p.etiqueta || "").toLowerCase() === "nuevo").slice(0, 4);
-  const lista = destacados.length ? destacados : CATALOGO.slice(0, 4);
+  // Filtra todos los perfumes marcados como "nuevo" o "recomendado" sin limite
+  const destacados = CATALOGO.filter(p => {
+    const et = (p.etiqueta || "").toLowerCase();
+    return et === "nuevo" || et === "recomendado";
+  });
+  
+  const lista = destacados.length ? destacados : CATALOGO;
   if (!lista.length) { cont.innerHTML = '<div class="empty">Agrega perfumes a tu Sheet para verlos aquí.</div>'; return; }
+  
   cont.innerHTML = lista.map(p => `
     <div class="card">
       <img src="${p.foto || FOTO_RESPALDO}" alt="${p.nombre || ""}" onerror="this.src='${FOTO_RESPALDO}'">
