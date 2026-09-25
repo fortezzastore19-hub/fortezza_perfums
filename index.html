@@ -146,6 +146,81 @@
       object-position: center !important;
     }
   }
+
+  /* --- Estilos del Carrusel --- */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+}
+
+.slide.active {
+  display: block;
+  animation: fade 0.8s ease-in-out;
+}
+
+@keyframes fade {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+/* Flechas de navegación */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  font-size: 1.2rem;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+.carousel-btn:hover { background: rgba(0, 0, 0, 0.8); }
+
+/* Puntos indicadores */
+.carousel-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: var(--bronze, #c5a059);
+  width: 25px;
+  border-radius: 10px;
+}
+
+/* Ajuste móvil para mantener tu configuración anterior */
+@media (max-width: 768px) {
+  .hero-img {
+    height: 380px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -178,7 +253,24 @@
 </div>
 
 <section class="hero">
-  <img class="hero-img" src="imagenes/banner.jpg" alt="Fortezza Perfums">
+  <!-- Contenedor del Carrusel -->
+  <div class="carousel-container">
+    <img class="hero-img slide active" src="imagenes/banner.jpg" alt="Banner 1">
+    <img class="hero-img slide" src="imagenes/banner2.jpg" alt="Banner 2">
+    <img class="hero-img slide" src="imagenes/banner3.jpg" alt="Banner 3">
+    
+    <!-- Botones de navegación (Flechas) -->
+    <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
+    
+    <!-- Indicadores (Puntos de abajo) -->
+    <div class="carousel-dots">
+      <span class="dot active" onclick="currentSlide(0)"></span>
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+    </div>
+  </div>
+
   <div class="hero-inner">
     <div class="cta-row">
       <a class="btn btn-solid" href="#" onclick="verCatalogoCompleto();return false;">Ver catálogo</a>
@@ -493,6 +585,53 @@ fetch(SHEET_TESTIMONIOS)
     document.getElementById("test-grid").innerHTML =
       '<div class="empty">Aún no hay testimonios cargados (o falta el link SHEET_TESTIMONIOS).</div>';
   });
+
+<script>
+  let currentSlideIndex = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  let autoSlideInterval;
+
+  function showSlide(index) {
+    if (index >= slides.length) currentSlideIndex = 0;
+    else if (index < 0) currentSlideIndex = slides.length - 1;
+    else currentSlideIndex = index;
+
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (dots[i]) dots[i].classList.remove('active');
+    });
+
+    slides[currentSlideIndex].classList.add('active');
+    if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.add('active');
+  }
+
+  function moveSlide(step) {
+    showSlide(currentSlideIndex + step);
+    resetTimer();
+  }
+
+  function currentSlide(index) {
+    showSlide(index);
+    resetTimer();
+  }
+
+  function startAutoSlide() {
+    // Cambia la imagen cada 4000 milisegundos (4 segundos)
+    autoSlideInterval = setInterval(() => {
+      showSlide(currentSlideIndex + 1);
+    }, 4000); 
+  }
+
+  function resetTimer() {
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
+  }
+
+  // Iniciar la rotación automática al cargar la página
+  startAutoSlide();
+</script>
+  
 </script>
 
 </body>
