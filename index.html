@@ -55,7 +55,7 @@
   .navlinks a:hover{border-color:var(--bronze);}
 
   /* Hero */
-.hero{position:relative;background:var(--onyx);border-bottom:1px solid var(--bronze-dim);
+  .hero{position:relative;background:var(--onyx);border-bottom:1px solid var(--bronze-dim);
     display:flex;flex-direction:column;width:100%;}
   .hero-img{width:100%;height:auto;object-fit:cover;display:block;}
   .hero-inner{padding:1.6rem 1.5rem;max-width:1180px;margin:0 auto;width:100%;}
@@ -138,6 +138,72 @@
   .volver{display:inline-block;margin-bottom:1rem;font-size:.85rem;color:var(--bronze);
     text-decoration:none;border-bottom:1px solid var(--bronze);cursor:pointer;}
 
+  /* --- Estilos del Carrusel --- */
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+  }
+
+  .slide.active {
+    display: block;
+    animation: fade 0.8s ease-in-out;
+  }
+
+  @keyframes fade {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+  }
+
+  /* Flechas de navegación */
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 4px;
+  }
+
+  .carousel-btn.prev { left: 10px; }
+  .carousel-btn.next { right: 10px; }
+  .carousel-btn:hover { background: rgba(0, 0, 0, 0.8); }
+
+  /* Puntos indicadores */
+  .carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .dot.active {
+    background: var(--bronze, #c5a059);
+    width: 25px;
+    border-radius: 10px;
+  }
+
   /* Ajuste para pantalla de celular */
   @media (max-width: 768px) {
     .hero-img {
@@ -146,81 +212,6 @@
       object-position: center !important;
     }
   }
-
-  /* --- Estilos del Carrusel --- */
-.carousel-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.slide {
-  display: none;
-  width: 100%;
-}
-
-.slide.active {
-  display: block;
-  animation: fade 0.8s ease-in-out;
-}
-
-@keyframes fade {
-  from { opacity: 0.4; }
-  to { opacity: 1; }
-}
-
-/* Flechas de navegación */
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border: none;
-  font-size: 1.2rem;
-  padding: 10px 15px;
-  cursor: pointer;
-  z-index: 10;
-  border-radius: 4px;
-}
-
-.carousel-btn.prev { left: 10px; }
-.carousel-btn.next { right: 10px; }
-.carousel-btn:hover { background: rgba(0, 0, 0, 0.8); }
-
-/* Puntos indicadores */
-.carousel-dots {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.dot.active {
-  background: var(--bronze, #c5a059);
-  width: 25px;
-  border-radius: 10px;
-}
-
-/* Ajuste móvil para mantener tu configuración anterior */
-@media (max-width: 768px) {
-  .hero-img {
-    height: 380px !important;
-    object-fit: cover !important;
-    object-position: center !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -258,17 +249,18 @@
     <img class="hero-img slide active" src="imagenes/banner.jpg" alt="Banner 1">
     <img class="hero-img slide" src="imagenes/banner2.jpg" alt="Banner 2">
     <img class="hero-img slide" src="imagenes/banner3.jpg" alt="Banner 3">
-<img class="hero-img slide" src="imagenes/banner4.jpg" alt="Banner 4">
+    <img class="hero-img slide" src="imagenes/banner4.jpg" alt="Banner 4">
     
     <!-- Botones de navegación (Flechas) -->
     <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
     <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
     
-    <!-- Indicadores (Puntos de abajo) -->
+    <!-- Indicadores (4 Puntos para 4 imágenes) -->
     <div class="carousel-dots">
       <span class="dot active" onclick="currentSlide(0)"></span>
       <span class="dot" onclick="currentSlide(1)"></span>
       <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
     </div>
   </div>
 
@@ -343,21 +335,18 @@
 // ============================================
 // CONFIGURA AQUÍ TUS DATOS REALES
 // ============================================
-const WHATSAPP_NUMBER = "573000000000"; // 57 = Colombia, sin espacios ni +
+// REEMPLAZA ESTE NÚMERO POR TU NÚMERO DE WHATSAPP REAL (Incluye código de país 57 para Colombia)
+const WHATSAPP_NUMBER = "573215207592"; 
 const INSTAGRAM_USER = "_fortezzaperfums";
 
 // Links de tus Google Sheets publicados como CSV
-// (Archivo > Compartir > Publicar en la Web > CSV)
 const SHEET_PERFUMES = "PEGA_AQUI_EL_LINK_CSV_DE_PERFUMES";
 const SHEET_TESTIMONIOS = "PEGA_AQUI_EL_LINK_CSV_DE_TESTIMONIOS";
 
 const FOTO_RESPALDO = "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400";
 
-// ============================================
-// Parser simple de CSV (soporta comas dentro de comillas)
-// ============================================
+// Parser CSV
 function parseCSV(texto) {
-  // Quita el BOM invisible que a veces agrega Google al publicar el CSV
   if (texto.charCodeAt(0) === 0xFEFF) texto = texto.slice(1);
 
   const filas = [];
@@ -381,7 +370,6 @@ function parseCSV(texto) {
   }
   if (campo !== "" || fila.length) { fila.push(campo); filas.push(fila); }
 
-  // Normaliza encabezados: sin tildes, sin espacios extra, minúsculas
   const sinTildes = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const encabezados = filas.shift().map(h => sinTildes(h.trim().toLowerCase()));
 
@@ -409,7 +397,6 @@ function toggleMenuMovil() {
   document.getElementById("mobile-menu").classList.toggle("abierto");
 }
 
-// Sombra sutil en el menú fijo cuando hay scroll
 window.addEventListener("scroll", () => {
   document.getElementById("nav-principal").classList.toggle("con-sombra", window.scrollY > 10);
 });
@@ -424,7 +411,6 @@ let filtroEtiqueta = "Todas";
 
 const SECCIONES = ["hero", "recomendados", "categorias", "marcas", "catalogo", "testimonios"];
 
-// Oculta todas las secciones excepto la indicada, como si fuera una página aparte
 function mostrarSoloSeccion(idMostrar) {
   SECCIONES.forEach(id => {
     const el = id === "hero" ? document.querySelector(".hero") : document.getElementById(id);
@@ -434,7 +420,6 @@ function mostrarSoloSeccion(idMostrar) {
   window.scrollTo({top:0, behavior:"instant"});
 }
 
-// Filtra el catálogo (por categoría, marca o etiqueta) y lo muestra como página aparte
 function verColeccion(tipo, valor) {
   if (tipo === "categoria") filtroCategoria = valor;
   if (tipo === "marca") filtroMarca = valor;
@@ -454,7 +439,6 @@ function verCatalogoCompleto() {
 function verSoloMarcas() { mostrarSoloSeccion("marcas"); }
 function verSoloTestimonios() { mostrarSoloSeccion("testimonios"); }
 
-// Vuelve a la página de inicio completa, sin filtros
 function verInicio() {
   filtroCategoria = "Todas";
   filtroMarca = "Todas";
@@ -587,52 +571,51 @@ fetch(SHEET_TESTIMONIOS)
       '<div class="empty">Aún no hay testimonios cargados (o falta el link SHEET_TESTIMONIOS).</div>';
   });
 
-<script>
-  let currentSlideIndex = 0;
-  const slides = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.dot');
-  let autoSlideInterval;
+// ============================================
+// LÓGICA DEL CARRUSEL DE IMÁGENES
+// ============================================
+let currentSlideIndex = 0;
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.dot');
+let autoSlideInterval;
 
-  function showSlide(index) {
-    if (index >= slides.length) currentSlideIndex = 0;
-    else if (index < 0) currentSlideIndex = slides.length - 1;
-    else currentSlideIndex = index;
+function showSlide(index) {
+  if (index >= slides.length) currentSlideIndex = 0;
+  else if (index < 0) currentSlideIndex = slides.length - 1;
+  else currentSlideIndex = index;
 
-    slides.forEach((slide, i) => {
-      slide.classList.remove('active');
-      if (dots[i]) dots[i].classList.remove('active');
-    });
+  slides.forEach((slide, i) => {
+    slide.classList.remove('active');
+    if (dots[i]) dots[i].classList.remove('active');
+  });
 
-    slides[currentSlideIndex].classList.add('active');
-    if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.add('active');
-  }
+  if(slides[currentSlideIndex]) slides[currentSlideIndex].classList.add('active');
+  if(dots[currentSlideIndex]) dots[currentSlideIndex].classList.add('active');
+}
 
-  function moveSlide(step) {
-    showSlide(currentSlideIndex + step);
-    resetTimer();
-  }
+function moveSlide(step) {
+  showSlide(currentSlideIndex + step);
+  resetTimer();
+}
 
-  function currentSlide(index) {
-    showSlide(index);
-    resetTimer();
-  }
+function currentSlide(index) {
+  showSlide(index);
+  resetTimer();
+}
 
-  function startAutoSlide() {
-    // Cambia la imagen cada 4000 milisegundos (4 segundos)
-    autoSlideInterval = setInterval(() => {
-      showSlide(currentSlideIndex + 1);
-    }, 4000); 
-  }
+function startAutoSlide() {
+  autoSlideInterval = setInterval(() => {
+    showSlide(currentSlideIndex + 1);
+  }, 4000); 
+}
 
-  function resetTimer() {
-    clearInterval(autoSlideInterval);
-    startAutoSlide();
-  }
-
-  // Iniciar la rotación automática al cargar la página
+function resetTimer() {
+  clearInterval(autoSlideInterval);
   startAutoSlide();
-</script>
-  
+}
+
+// Iniciar carrusel al cargar
+startAutoSlide();
 </script>
 
 </body>
