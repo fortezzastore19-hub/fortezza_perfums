@@ -42,7 +42,7 @@
   .promo{background:var(--bronze);color:var(--onyx);text-align:center;
     font-size:.78rem;letter-spacing:.04em;padding:.55rem 1rem;font-weight:500;}
 
-  /* Nav (Static - desparece al hacer scroll) */
+  /* Nav */
   nav.wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.1rem;
     position:relative;background:var(--onyx);z-index:80;border-bottom:1px solid transparent;
     transition:border-color .2s, box-shadow .2s;}
@@ -137,7 +137,7 @@
   .volver{display:inline-block;margin-bottom:1rem;font-size:.85rem;color:var(--bronze);
     text-decoration:none;border-bottom:1px solid var(--bronze);cursor:pointer;}
 
-  /* --- Estilos del Carrusel --- */
+  /* --- Estilos del Carrusel Responsive --- */
   .carousel-container {
     position: relative;
     width: 100%;
@@ -157,6 +157,17 @@
   @keyframes fade {
     from { opacity: 0.4; }
     to { opacity: 1; }
+  }
+
+  /* Control de visibilidad PC vs Móvil */
+  .mobile-slide {
+    display: none !important; /* Oculto en PC por defecto */
+  }
+
+  .pc-slide {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   /* Flechas de navegación */
@@ -203,12 +214,17 @@
     border-radius: 10px;
   }
 
-  /* Ajuste para pantalla de celular */
+  /* --- REGLAS EXCLUSIVAS PARA CELULAR --- */
   @media (max-width: 768px) {
-    .hero-img {
-      height: 380px !important;
-      object-fit: cover !important;
-      object-position: center !important;
+    .pc-slide {
+      display: none !important; /* Oculta versión de PC en Celular */
+    }
+
+    .mobile-slide {
+      display: block !important; /* Muestra versión de Celular */
+      width: 100%;
+      height: auto !important;   /* Renderiza la imagen completa en vertical */
+      object-fit: contain;
     }
   }
 </style>
@@ -243,18 +259,37 @@
 </div>
 
 <section class="hero">
-  <!-- Contenedor del Carrusel -->
+  <!-- Contenedor del Carrusel Responsive -->
   <div class="carousel-container">
-    <img class="hero-img slide active" src="imagenes/banner.jpg" alt="Banner 1">
-    <img class="hero-img slide" src="imagenes/banner2.jpg" alt="Banner 2">
-    <img class="hero-img slide" src="imagenes/banner3.jpg.png" alt="Banner 3">
-    <img class="hero-img slide" src="imagenes/banner4.jpg" alt="Banner 4">
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <img class="hero-img pc-slide" src="imagenes/banner.jpg" alt="Banner PC 1">
+      <img class="hero-img mobile-slide" src="imagenes/banner_mobile.jpg" alt="Banner Móvil 1">
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+      <img class="hero-img pc-slide" src="imagenes/banner2.jpg" alt="Banner PC 2">
+      <img class="hero-img mobile-slide" src="imagenes/banner2_mobile.jpg" alt="Banner Móvil 2">
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide">
+      <img class="hero-img pc-slide" src="imagenes/banner3.jpg.png" alt="Banner PC 3">
+      <img class="hero-img mobile-slide" src="imagenes/banner3_mobile.jpg" alt="Banner Móvil 3">
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+      <img class="hero-img pc-slide" src="imagenes/banner4.jpg" alt="Banner PC 4">
+      <img class="hero-img mobile-slide" src="imagenes/banner4_mobile.jpg" alt="Banner Móvil 4">
+    </div>
     
     <!-- Botones de navegación (Flechas) -->
     <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
     <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
     
-    <!-- Indicadores (4 Puntos para 4 imágenes) -->
+    <!-- Indicadores -->
     <div class="carousel-dots">
       <span class="dot active" onclick="currentSlide(0)"></span>
       <span class="dot" onclick="currentSlide(1)"></span>
@@ -438,7 +473,6 @@ function verInicio() {
   filtroMarca = "Todas";
   filtroEtiqueta = "Todas";
   
-  // En inicio solo mostramos Hero, Recomendados (New Arrivals) y Testimonios
   SECCIONES.forEach(id => {
     const el = id === "hero" ? document.querySelector(".hero") : document.getElementById(id);
     if (el) {
@@ -519,7 +553,6 @@ document.getElementById("buscador").addEventListener("input", renderCatalogo);
 // ============================================
 function renderRecomendados() {
   const cont = document.getElementById("recomendados-grid");
-  // Filtra todos los perfumes marcados como "nuevo" o "recomendado" sin limite
   const destacados = CATALOGO.filter(p => {
     const et = (p.etiqueta || "").toLowerCase();
     return et === "nuevo" || et === "recomendado";
